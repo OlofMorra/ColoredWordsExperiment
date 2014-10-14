@@ -15,6 +15,8 @@ import javax.swing.*;
 import coloredwordsexperiment.MatchingWords;
 
 public class ColoredWordsExperiment extends JPanel implements ActionListener{
+    ArrayList<Float> allTimes = new ArrayList<Float>();
+    
     JFrame frame = new JFrame("Colored Words Experiment"); 
     
     JPanel buttonPane = new JPanel();
@@ -71,9 +73,13 @@ public class ColoredWordsExperiment extends JPanel implements ActionListener{
         nonMatchingButton.setSize(new Dimension(BUTTONWIDTH, BUTTONHEIGHT));
         finishedButton.setSize(new Dimension(BUTTONWIDTH, BUTTONHEIGHT));
         
+        // Add actionlisteners
         matchingButton.addActionListener(this);
         nonMatchingButton.addActionListener(this);
         finishedButton.addActionListener(this);
+        
+        // We can't finish if we haven't started!
+        finishedButton.setEnabled(false);
         
         // Make the frame visible
         frame.setVisible(true);
@@ -122,13 +128,24 @@ public class ColoredWordsExperiment extends JPanel implements ActionListener{
         finishTime = ae.getWhen();
         
         if (isCurrentlyMatching) {
-            long deltaTime =  finishTime - startTimeMatching;
+            float deltaTime =  finishTime - startTimeMatching;
+            deltaTime /= 1000;
             matchingTime.setText("" + deltaTime);
+            allTimes.add(deltaTime);
+            
         } else {
-            long deltaTime = finishTime - startTimeNonMatching;
+            float deltaTime = finishTime - startTimeNonMatching;
+            deltaTime /= 1000;
             nonMatchingTime.setText("" + deltaTime);
+            allTimes.add(deltaTime);
         }
         
+        float avrgTime = 0;
+        for (float i : allTimes) {
+            avrgTime += i;
+        }
+        avrgTime /= allTimes.size();
+        averageTime.setText("" + avrgTime);
         finishedButton.setEnabled(false);
     }
 }
