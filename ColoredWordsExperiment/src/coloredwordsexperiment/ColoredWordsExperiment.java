@@ -15,12 +15,13 @@ import javax.swing.*;
 import coloredwordsexperiment.MatchingWords;
 
 public class ColoredWordsExperiment extends JPanel implements ActionListener{
-    ArrayList<Float> allTimes = new ArrayList<Float>();
+    // An array of all times so far, in order to be able to compute the average
+    ArrayList<Float> allTimes = new ArrayList<Float>(); 
     
     JFrame frame = new JFrame("Colored Words Experiment"); 
     
-    JPanel buttonPane = new JPanel();
-    JPanel wordPanel;
+    JPanel buttonPane = new JPanel(); // Panel for the IO
+    JPanel wordPanel; // Panel on which the words are drawn
     
     // Create buttons for in the frame
     JButton matchingButton = new JButton("Matching");
@@ -44,7 +45,7 @@ public class ColoredWordsExperiment extends JPanel implements ActionListener{
     private final int HEIGHT = 600;
     private final int WIDTH = 800;
     
-    private final int BUTTONHEIGHT = 40;
+    private final int BUTTONHEIGHT = 8000;
     private final int BUTTONWIDTH = 100;
     
     public static void main(String[] args) {
@@ -68,6 +69,9 @@ public class ColoredWordsExperiment extends JPanel implements ActionListener{
         // Make the buttons align properly
         buttonPane.setLayout(gridLayout);
         
+        
+        // TODO: This seems to do nothing. I set BUTTONHEIGHT to 8000, but it
+        // is still as small as it was.
         // Set size of the buttons
         matchingButton.setSize(new Dimension(BUTTONWIDTH, BUTTONHEIGHT));
         nonMatchingButton.setSize(new Dimension(BUTTONWIDTH, BUTTONHEIGHT));
@@ -115,7 +119,10 @@ public class ColoredWordsExperiment extends JPanel implements ActionListener{
         wordPanel = new JPanel();
         frame.getContentPane().add(wordPanel, BorderLayout.CENTER);
 
-        MatchingWords words = new MatchingWords(wordPanel, false);
+        // Make words
+        new MatchingWords(wordPanel, false);
+        
+        // Draw words on the screen
         wordPanel.updateUI();
         
         // Set the starttime
@@ -125,27 +132,42 @@ public class ColoredWordsExperiment extends JPanel implements ActionListener{
     }
     
     void finished(ActionEvent ae) {
+        // Get time at end
         finishTime = ae.getWhen();
         
         if (isCurrentlyMatching) {
+            // Compute time
             float deltaTime =  finishTime - startTimeMatching;
             deltaTime /= 1000;
-            matchingTime.setText("" + deltaTime);
-            allTimes.add(deltaTime);
             
+            // Print time to label next to matching
+            matchingTime.setText("" + deltaTime);
+            
+            // Contribute to global average
+            allTimes.add(deltaTime);
         } else {
+            // Compute time
             float deltaTime = finishTime - startTimeNonMatching;
             deltaTime /= 1000;
+            
+            // Print time to label next to non-matching
             nonMatchingTime.setText("" + deltaTime);
+            
+            // Contribute to global average
             allTimes.add(deltaTime);
         }
         
-        float avrgTime = 0;
+        // Compute new average
+        float averageTimeFloat = 0;
         for (float i : allTimes) {
-            avrgTime += i;
+            averageTimeFloat += i;
         }
-        avrgTime /= allTimes.size();
-        averageTime.setText("" + avrgTime);
+        averageTimeFloat /= allTimes.size();
+        
+        // Print new average
+        averageTime.setText("" + averageTimeFloat);
+        
+        // We can't finish twice without starting inbetween
         finishedButton.setEnabled(false);
     }
 }
