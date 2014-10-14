@@ -6,10 +6,18 @@
 
 package coloredwordsexperiment;
 
+import java.awt.Color;
+import java.util.Random;
+
 /**
  *
  * @author s149740
  */
 public class MatchingWords {
+    String word;
+    Color color;
+    Random random = new Random();
     
+    MatchingWords() {
+    }
 }
