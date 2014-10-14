@@ -1,10 +1,11 @@
 /**
- * Author: Jan Heemstra & Olof Morra
+ * @author: Jan Heemstra & Olof Morra
  * Course: 2IP90
  */
 
 package coloredwordsexperiment;
 
+import java.util.ArrayList;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,15 +14,11 @@ import javax.swing.*;
 
 import coloredwordsexperiment.MatchingWords;
 
-/**
- *
- * @author s149740 
- */
 public class ColoredWordsExperiment extends JPanel implements ActionListener{
     JFrame frame = new JFrame("Colored Words Experiment"); 
     
     JPanel buttonPane = new JPanel();
-    JPanel wordPanel = new JPanel();
+    JPanel wordPanel;
     
     // Create buttons for in the frame
     JButton matchingButton = new JButton("Matching");
@@ -33,6 +30,8 @@ public class ColoredWordsExperiment extends JPanel implements ActionListener{
     JLabel averageTime = new JLabel("");
     
     GridLayout gridLayout = new GridLayout(1,6, 20, 20);
+    
+    ArrayList<MatchingWords> wordList = new ArrayList<MatchingWords>();
     
     long startTimeMatching;
     long startTimeNonMatching;
@@ -55,7 +54,6 @@ public class ColoredWordsExperiment extends JPanel implements ActionListener{
         frame.setSize(WIDTH, HEIGHT);
         
         frame.getContentPane().add(buttonPane, BorderLayout.SOUTH);
-        frame.getContentPane().add(wordPanel, BorderLayout.CENTER);
         
         // Add buttons to frame
         buttonPane.add(matchingButton);
@@ -65,6 +63,7 @@ public class ColoredWordsExperiment extends JPanel implements ActionListener{
         buttonPane.add(finishedButton);
         buttonPane.add(averageTime);
         
+        // Make the buttons align properly
         buttonPane.setLayout(gridLayout);
         
         // Set size of the buttons
@@ -82,6 +81,7 @@ public class ColoredWordsExperiment extends JPanel implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent ae) {
+        // Monitor buttons getting pressed
         switch(ae.getActionCommand()){
             case "Matching": matching(ae);
                 break;
@@ -93,19 +93,29 @@ public class ColoredWordsExperiment extends JPanel implements ActionListener{
     }
     
     void matching(ActionEvent ae) {
-        
+        wordPanel = new JPanel();
+        frame.getContentPane().add(wordPanel, BorderLayout.CENTER);
+
+        MatchingWords words = new MatchingWords(wordPanel, true);
+        wordPanel.updateUI();
         
         // Set the starttime
         isCurrentlyMatching = true;
         startTimeMatching = ae.getWhen();
+        finishedButton.setEnabled(true);
     }
     
     void nonMatching(ActionEvent ae) {
-        
+        wordPanel = new JPanel();
+        frame.getContentPane().add(wordPanel, BorderLayout.CENTER);
+
+        MatchingWords words = new MatchingWords(wordPanel, false);
+        wordPanel.updateUI();
         
         // Set the starttime
         isCurrentlyMatching = false;
         startTimeNonMatching = ae.getWhen();
+        finishedButton.setEnabled(true);
     }
     
     void finished(ActionEvent ae) {
@@ -113,12 +123,12 @@ public class ColoredWordsExperiment extends JPanel implements ActionListener{
         
         if (isCurrentlyMatching) {
             long deltaTime =  finishTime - startTimeMatching;
-            
             matchingTime.setText("" + deltaTime);
         } else {
             long deltaTime = finishTime - startTimeNonMatching;
-            
             nonMatchingTime.setText("" + deltaTime);
         }
+        
+        finishedButton.setEnabled(false);
     }
 }
