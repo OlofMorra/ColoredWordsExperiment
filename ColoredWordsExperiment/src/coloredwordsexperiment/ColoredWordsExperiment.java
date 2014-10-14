@@ -99,6 +99,7 @@ public class ColoredWordsExperiment extends JPanel implements ActionListener{
                 break;
             case "Finished": finished(ae);
                 break;
+            case "Reset": reset();
         }
     }
     
@@ -112,7 +113,12 @@ public class ColoredWordsExperiment extends JPanel implements ActionListener{
         // Set the starttime
         isCurrentlyMatching = true;
         startTimeMatching = ae.getWhen();
+        
+        // Make buttons proper buttons clickable
         finishedButton.setEnabled(true);
+        nonMatchingButton.setEnabled(false);
+        
+        matchingButton.setText("Reset");
     }
     
     void nonMatching(ActionEvent ae) {
@@ -128,7 +134,12 @@ public class ColoredWordsExperiment extends JPanel implements ActionListener{
         // Set the starttime
         isCurrentlyMatching = false;
         startTimeNonMatching = ae.getWhen();
+        
+        // Make buttons proper buttons clickable
         finishedButton.setEnabled(true);
+        matchingButton.setEnabled(false);
+        
+        nonMatchingButton.setText("Reset");
     }
     
     void finished(ActionEvent ae) {
@@ -167,7 +178,16 @@ public class ColoredWordsExperiment extends JPanel implements ActionListener{
         // Print new average
         averageTime.setText("" + averageTimeFloat);
         
-        // We can't finish twice without starting inbetween
+        // Reset all buttons
+        reset();
+    }
+    
+    // Resets everything to the default
+    void reset() {
+        matchingButton.setText("Matching");
+        matchingButton.setEnabled(true);
+        nonMatchingButton.setText("Non-Matching");
+        nonMatchingButton.setEnabled(true);
         finishedButton.setEnabled(false);
     }
 }
